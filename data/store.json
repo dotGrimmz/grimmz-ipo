@@ -1,0 +1,103 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "category_name": "Technology"
+    },
+    {
+      "id": 2,
+      "category_name": "Healthcare"
+    },
+    {
+      "id": 3,
+      "category_name": "Energy"
+    },
+    {
+      "id": 4,
+      "category_name": "Materials"
+    },
+    {
+      "id": 5,
+      "category_name": "Financials"
+    }
+  ],
+  "symbols": [
+    {
+      "id": 1,
+      "category_id": 1,
+      "symbol": "AAPL",
+      "company_name": "Apple Inc.",
+      "sector": "Technology"
+    },
+    {
+      "id": 2,
+      "category_id": 1,
+      "symbol": "MSFT",
+      "company_name": "Microsoft Corp.",
+      "sector": "Technology"
+    },
+    {
+      "id": 3,
+      "category_id": 2,
+      "symbol": "JNJ",
+      "company_name": "Johnson & Johnson",
+      "sector": "Healthcare"
+    },
+    {
+      "id": 4,
+      "category_id": 2,
+      "symbol": "PFE",
+      "company_name": "Pfizer Inc.",
+      "sector": "Healthcare"
+    },
+    {
+      "id": 5,
+      "category_id": 3,
+      "symbol": "XOM",
+      "company_name": "Exxon Mobil Corp.",
+      "sector": "Energy"
+    },
+    {
+      "id": 6,
+      "category_id": 3,
+      "symbol": "CVX",
+      "company_name": "Chevron Corp.",
+      "sector": "Energy"
+    },
+    {
+      "id": 7,
+      "category_id": 4,
+      "symbol": "LIN",
+      "company_name": "Linde Plc",
+      "sector": "Materials"
+    },
+    {
+      "id": 8,
+      "category_id": 4,
+      "symbol": "APD",
+      "company_name": "Air Products and Chemicals",
+      "sector": "Materials"
+    },
+    {
+      "id": 9,
+      "category_id": 4,
+      "symbol": "APD",
+      "company_name": "Air Products and Chemicals",
+      "sector": "Materials"
+    },
+    {
+      "symbol": "FAITH.PA",
+      "companyName": "FRK MSCI WORLD CATH PRIN ETF",
+      "categoryId": 1,
+      "sector": "Technology",
+      "id": 10
+    },
+    {
+      "symbol": "JRJRQ",
+      "companyName": "JRJR33 INC",
+      "categoryId": 1,
+      "sector": "Technology",
+      "id": 11
+    }
+  ]
+}
