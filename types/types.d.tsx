@@ -45,7 +45,7 @@ export type CategoriesProps = Categories & {
 };
 
 export type CategoryPageProps = {
-  categories: CategoriesProps[];
+  _categories: CategoriesProps[];
 };
 
 export type PostSymbolData = {

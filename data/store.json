@@ -23,13 +23,6 @@
   ],
   "symbols": [
     {
-      "id": 1,
-      "category_id": 1,
-      "symbol": "AAPL",
-      "company_name": "Apple Inc.",
-      "sector": "Technology"
-    },
-    {
       "id": 2,
       "category_id": 1,
       "symbol": "MSFT",
@@ -86,18 +79,39 @@
       "sector": "Materials"
     },
     {
-      "symbol": "FAITH.PA",
-      "companyName": "FRK MSCI WORLD CATH PRIN ETF",
-      "categoryId": 1,
-      "sector": "Technology",
-      "id": 10
-    },
-    {
       "symbol": "JRJRQ",
       "companyName": "JRJR33 INC",
       "categoryId": 1,
       "sector": "Technology",
       "id": 11
+    },
+    {
+      "symbol": "JETR",
+      "companyName": "STAR JETS INTERNATIONAL INC",
+      "categoryId": 1,
+      "sector": "Technology",
+      "id": 12
+    },
+    {
+      "symbol": "JUNS",
+      "companyName": "JUPITER NEUROSCIENCES INC",
+      "categoryId": 1,
+      "sector": "Technology",
+      "id": 14
+    },
+    {
+      "symbol": "AAPT",
+      "companyName": "ALL AMERICAN PET CO INC",
+      "categoryId": 1,
+      "sector": "Technology",
+      "id": 13
+    },
+    {
+      "symbol": "AAPL",
+      "companyName": "APPLE INC",
+      "categoryId": 1,
+      "sector": "Technology",
+      "id": 14
     }
   ]
 }

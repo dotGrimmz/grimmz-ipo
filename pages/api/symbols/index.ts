@@ -1,7 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAllCategories, getAllSymbols, addSymbol } from "../../../lib/db";
+import {
+  getAllCategories,
+  getAllSymbols,
+  addSymbol,
+  deleteSymbol,
+} from "../../../lib/db";
 import { Symbol } from "@/types/types.d";
-import { addSymbolToStore } from "@/lib/filehandler";
+import { addSymbolToStore, deleteSymbolFromStore } from "@/lib/filehandler";
 const finnhub = require("finnhub");
 const finhubApiKey = process.env.FINHUB_API_KEY as string;
 
@@ -25,6 +30,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(req.method);
   if (req.method === "GET") {
     try {
       // Get symbol data and parse out all the symbols
@@ -58,22 +64,28 @@ export default async function handler(
     }
   } else if (req.method === "POST") {
     const { symbol, companyName, sector, id } = req.body;
-    // get categories to parse the name and id
-    // Add symbol to SQLite DB
-    await addSymbol(symbol, companyName, id, sector);
 
-    // Prepare symbol data for JSON file storage
-    const symbolData = {
-      symbol,
-      companyName,
-      categoryId: id,
-      sector,
-    };
+    try {
+      await addSymbol(symbol, companyName, id, sector);
+      // get categories to parse the name and id
+      // Add symbol to SQLite DB
 
-    // Add symbol to JSON file store
-    await addSymbolToStore(symbolData);
+      // Prepare symbol data for JSON file storage
+      const symbolData = {
+        symbol,
+        companyName,
+        categoryId: id,
+        sector,
+      };
 
-    res.status(200).json({ message: "Symbol added successfully" });
+      // Add symbol to JSON file store
+      await addSymbolToStore(symbolData);
+
+      res.status(200).json({ message: "Symbol added successfully" });
+    } catch (error) {
+      console.error("Error fetching exchanges:", error);
+      res.status(500).json({ error: "Failed to add Symbol " });
+    }
 
     /**
      * 
@@ -95,12 +107,22 @@ export default async function handler(
       allow the user to determine the category instead of a strict validation
      * 
      */
-    console.log({ symbol, companyName });
   } else if (req.method === "DELETE") {
-    const { symbol } = req.body;
-    console.log("Delete symbol:", symbol);
-    // const deleteSymbol = await deleteSymbol(symbol);
-    res.status(200).json({ message: "Symbol deleted successfully" });
+    const { id } = req.query;
+    console.log("Delete ID:", id);
+
+    try {
+      await deleteSymbolFromStore(id);
+      await deleteSymbol(id);
+      res
+        .status(200)
+        .json({ success: `Successfully deleted symbol with id: ${id}` });
+    } catch (error) {
+      console.error("Error deleting symbol:", error);
+      res.status(500).json({ error: "Failed to delete symbol" });
+    }
+
+    // const deletedFromStore = await deleteSymbolFromStore(id);
   } else {
     res.status(405).json({ error: "Method not allowed" });
   }

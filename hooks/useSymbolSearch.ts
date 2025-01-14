@@ -18,7 +18,6 @@ export const useSymbolSearch = () => {
         );
         if (!response.ok) throw new Error("Error fetching symbols");
         const data = await response.json();
-        // I want to filter out the data where the symbolData.symbol includes "."
 
         const symbolDataArr = data.filter(
           (symbolData: any) => !symbolData.symbol.includes(".")

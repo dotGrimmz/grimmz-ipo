@@ -4,9 +4,10 @@ import { Category, PostSymbolData } from "@/types/types.d";
 
 type SymbolSearchProps = {
   category: Category;
-  addSymbol: (data: PostSymbolData) => void;
+  addSymbol: (data: PostSymbolData, closeModal: () => void) => void;
   id: number | null;
   pendingPost: boolean;
+  closeModal: () => void;
 };
 
 type SymbolSearchData = {
@@ -21,6 +22,7 @@ export const SymbolSearch = ({
   addSymbol,
   id,
   pendingPost,
+  closeModal,
 }: SymbolSearchProps) => {
   const { query, setQuery, symbols, isLoading } = useSymbolSearch();
 
@@ -46,12 +48,10 @@ export const SymbolSearch = ({
               id,
             } as PostSymbolData;
             return (
-              // I need to put together the symbolData object to pass to the addSymbol function,,,
-
               <li
                 key={symbolData.symbol}
                 onClick={() => {
-                  addSymbol(postData);
+                  addSymbol(postData, closeModal);
                 }}
                 className="p-2 border-b cursor-pointer mt-2 mb-2 hover:bg-gray-100"
               >

@@ -5,7 +5,7 @@ import {
   CompanyProfile,
   CategoryPageProps,
 } from "@/types/types.d";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import StockContext from "@/context/StockContextImplementation";
 import { StockPanel } from "@/components/StockPanel";
@@ -13,46 +13,66 @@ import { useModal } from "@/hooks/useModal";
 import { ModalComponent } from "@/components/ModalComponent";
 import { SymbolSearch } from "@/components/SymbolSearch";
 
+const loadCategories = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/symbols`
+  );
+  const _categories = await res.json();
+  return _categories;
+};
+
 export async function getServerSideProps() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/symbols`
-    );
-    const categories = await res.json();
+    const categories = await loadCategories();
 
     return {
       props: {
-        categories,
+        _categories: categories,
       },
     };
   } catch (err) {
     console.error("Error fetching categories:", err);
     return {
       props: {
-        categories: [],
+        _categories: [],
       },
     };
   }
 }
 
-export default function Categories({ categories }: CategoryPageProps) {
+export default function Categories({ _categories }: CategoryPageProps) {
   const title = "S&P 500";
-  const { activeTab, setActiveTab, handleAddSymbol, pendingPost } =
-    useContext<any>(StockContext);
+  const {
+    activeTab,
+    setActiveTab,
+    handleAddSymbol,
+    pendingPost,
+    handleDeleteSymbol,
+  } = useContext<any>(StockContext);
   const { isModalOpen, openModal, closeModal } = useModal();
 
-  console.log({ categories });
-  const activeTabCompanyProfiles = categories
-    ?.filter((category) => category.category_name === activeTab)
-    ?.map((category) => category.symbols.map((symbol: any) => symbol.profile));
-  console.log({ categories });
+  const [categories, setCategories] = useState<any>(_categories);
+  console.log({ _categories, categories });
 
+  //ts-ignore
+  const activeTabCompanyProfiles = categories
+    ?.filter((category: any) => category.category_name === activeTab)
+    ?.map((category: any) =>
+      category.symbols.map((symbol: any) => {
+        const { profile } = symbol;
+        return {
+          id: symbol.id,
+          ...profile,
+        };
+      })
+    );
+
+  //ts-ignore
   const category = categories?.find(
     (category: any) => category.category_name === activeTab
   );
-  const id = category ? category.id : null;
+  const categoryId = category ? category.id : null;
 
-  console.log({ id });
   const tabBtn = (category: Category) => {
     return (
       <div
@@ -75,6 +95,7 @@ export default function Categories({ categories }: CategoryPageProps) {
     return (
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {companyProfile.map((profile: any, index: number) => {
+          const firstLetter = profile.name.charAt(0);
           return (
             <div
               key={index}
@@ -102,13 +123,25 @@ export default function Categories({ categories }: CategoryPageProps) {
               </div>
               <div>{`Shares Outstanding: ${profile.shareOutstanding}`}</div>
               <div>
-                <Image
-                  width={100}
-                  height={100}
-                  src={profile.logo}
-                  alt={profile.ticker}
-                />
+                {profile.logo ? (
+                  <div className="avatar placeholder">
+                    <Image
+                      className="rounded-full ring ring-offset-2"
+                      width={100}
+                      height={100}
+                      src={profile.logo || "/no-image.png"}
+                      alt={profile.ticker}
+                    />
+                  </div>
+                ) : (
+                  <div className="avatar placeholder">
+                    <div className="bg-neutral text-neutral-content w-24 rounded-full ring ring-offset-2">
+                      <span className="text-3xl">{firstLetter}</span>
+                    </div>
+                  </div>
+                )}
               </div>
+
               <div
                 style={{
                   display: "flex",
@@ -117,7 +150,18 @@ export default function Categories({ categories }: CategoryPageProps) {
                 }}
               >
                 <div className="btn btn-secondary">Insights</div>
-                <div className="btn btn-error">Delete</div>
+                <div
+                  className="btn btn-error"
+                  onClick={() =>
+                    handleDeleteSymbol(profile.id, async () => {
+                      console.log("Deleting complete");
+                      await loadCategories();
+                      console.log("loading completed");
+                    })
+                  }
+                >
+                  Delete
+                </div>
               </div>
             </div>
           );
@@ -125,6 +169,7 @@ export default function Categories({ categories }: CategoryPageProps) {
       </div>
     );
   };
+
   return (
     <div
       style={{
@@ -169,9 +214,9 @@ export default function Categories({ categories }: CategoryPageProps) {
           overflow: "auto",
         }}
       >
-        {activeTabCompanyProfiles.map((profile: any, index: number) => {
+        {activeTabCompanyProfiles.map((profile: any) => {
           return (
-            <div key={index}>
+            <div key={profile.id}>
               <StockCards companyProfile={profile} />
             </div>
           );
@@ -184,8 +229,9 @@ export default function Categories({ categories }: CategoryPageProps) {
             <SymbolSearch
               addSymbol={handleAddSymbol}
               category={activeTab}
-              id={id}
+              id={categoryId}
               pendingPost={pendingPost}
+              closeModal={closeModal}
             />
           }
         />
